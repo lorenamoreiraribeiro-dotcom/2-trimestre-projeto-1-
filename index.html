@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carros Familiares Brasileiros 3D | VSCO Aesthetic</title>
+    <title>Garagem de Família 3D | VSCO Aesthetic</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
@@ -109,4 +109,39 @@
 
         .car-description {
             font-size: 0.9rem;
-            color: #555
+            color: #555555;
+            line-height: 1.5;
+        }
+
+        .interaction-bar {
+            padding: 15px 20px;
+            border-top: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-like {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .btn-like:active {
+            transform: scale(1.2);
+        }
+
+        .like-count {
+            font-size: 0.85rem;
+            color: #444444;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Family Rides 3D</h1>
+        <p class="subtitle">Clique e arraste nos carros para visualizar os detalhes
