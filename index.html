@@ -3,18 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clima Guarapuava | Edição Verde & Azul (Nuvens)</title>
+  <title>Clima Guarapuava | Edição Verde & Azul</title>
   <style>
     /* ==========================================================
-       1. VARIÁVEIS DE CORES E ESTILOS GLOBAIS (INALTERADOS)
+       1. VARIÁVEIS DE CORES E ESTILOS GLOBAIS
        ========================================================== */
     :root {
-      /* Gradiente de fundo: Verde Esmeralda -> Azul Oceano Profundo */
       --bg-gradient: linear-gradient(135deg, #064e3b 0%, #0d9488 45%, #1e3a8a 100%);
       --card-bg: rgba(15, 23, 42, 0.45);
-      --card-border: rgba(45, 212, 191, 0.3); /* Borda em ciano/verde */
-      --accent-green: #34d399; /* Verde neon para destaques */
-      --accent-blue: #38bdf8;  /* Azul claro para métricas secundárias */
+      --card-border: rgba(45, 212, 191, 0.3);
+      --accent-green: #34d399;
+      --accent-blue: #38bdf8;
       --text-main: #f8fafc;
       --text-muted: #cbd5e1;
     }
@@ -37,7 +36,7 @@
     }
 
     /* ==========================================================
-       2. CARTÃO PRINCIPAL E EFEITOS VISUAIS (INALTERADOS)
+       2. CARTÃO PRINCIPAL E EFEITOS VISUAIS
        ========================================================== */
     .weather-card {
       background: var(--card-bg);
@@ -49,12 +48,11 @@
       width: 100%;
       max-width: 450px;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5),
-                  0 0 40px rgba(52, 211, 153, 0.15); /* Brilho esverdeado */
+                  0 0 40px rgba(52, 211, 153, 0.15);
       position: relative;
       overflow: hidden;
     }
 
-    /* Brilho decorativo no topo (Inalterado) */
     .weather-card::before {
       content: '';
       position: absolute;
@@ -74,11 +72,11 @@
     }
 
     /* ==========================================================
-       3. CABEÇALHO & DECORAÇÃO DE NUVENS EM CÓDIGO (NOVO)
+       3. CABEÇALHO & IMAGEM DE NUVENS
        ========================================================== */
     header {
       text-align: center;
-      margin-bottom: 5px; /* Reduzido para acomodar nuvens */
+      margin-bottom: 10px;
     }
 
     header h1 {
@@ -97,66 +95,31 @@
       font-weight: 600;
     }
 
-    /* Banner decorativo com nuvens em CSS puro (Substitui a imagem) */
-    .weather-decoration-box {
+    /* Banner com Imagem de Nuvens */
+    .weather-image-box {
       width: 100%;
-      height: 100px; /* Reduzido em comparação à imagem anterior */
+      height: 120px;
       border-radius: 20px;
+      overflow: hidden;
       margin: 15px 0;
       position: relative;
-      background: rgba(255, 255, 255, 0.03); /* Fundo sutil */
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
-    /* Estilização das nuvens em CSS */
-    .cloud {
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 50px;
-      position: absolute;
+    .weather-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
     }
 
-    .cloud::after, .cloud::before {
-      content: '';
-      background: inherit;
-      border-radius: 50%;
-      position: absolute;
+    .weather-image-box:hover img {
+      transform: scale(1.08);
     }
-
-    /* Nuvem grande principal */
-    .cloud-1 {
-      width: 100px;
-      height: 40px;
-      top: 40px;
-      left: 150px;
-      opacity: 0.8;
-    }
-    .cloud-1::after { width: 50px; height: 50px; top: -25px; left: 15px; }
-    .cloud-1::before { width: 40px; height: 40px; top: -15px; left: 50px; }
-
-    /* Nuvem média */
-    .cloud-2 {
-      width: 60px;
-      height: 24px;
-      top: 25px;
-      left: 60px;
-      opacity: 0.5;
-    }
-    .cloud-2::after { width: 30px; height: 30px; top: -15px; left: 10px; }
-    .cloud-2::before { width: 25px; height: 25px; top: -10px; left: 30px; }
-
-    /* Nuvem pequena */
-    .cloud-3 {
-      width: 40px;
-      height: 16px;
-      top: 60px;
-      left: 280px;
-      opacity: 0.4;
-    }
-    .cloud-3::after { width: 20px; height: 20px; top: -10px; left: 8px; }
 
     /* ==========================================================
-       4. SISTEMA DE ABAS NAVEGÁVEIS (INALTERADO)
+       4. SISTEMA DE ABAS NAVEGÁVEIS
        ========================================================== */
     .tabs {
       display: flex;
@@ -201,7 +164,7 @@
     }
 
     /* ==========================================================
-       5. LAYOUTS DE DADOS E CARDS DE INFORMAÇÕES (INALTERADO)
+       5. LAYOUTS DE DADOS E CARDS DE INFORMAÇÕES
        ========================================================== */
     .temp-display {
       text-align: center;
@@ -264,7 +227,6 @@
       color: #ffffff;
     }
 
-    /* Estilo da Lista de Previsão (Inalterado) */
     .forecast-list {
       display: flex;
       flex-direction: column;
@@ -278,7 +240,7 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 12px 18px;
-      border-radius: 166px;
+      border-radius: 16px;
     }
 
     .forecast-day {
@@ -309,10 +271,8 @@
         <p>Paraná • Brasil</p>
       </header>
 
-      <div class="weather-decoration-box">
-        <div class="cloud cloud-1"></div>
-        <div class="cloud cloud-2"></div>
-        <div class="cloud cloud-3"></div>
+      <div class="weather-image-box">
+        <img src="https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=600&auto=format&fit=crop" alt="Nuvens no céu">
       </div>
 
       <div class="tabs">
@@ -342,9 +302,6 @@
   </div>
 
   <script>
-    /* ==========================================================
-       LÓGICA JAVASCRIPT (INALTERADA, exceto remoção da troca de imagem)
-       ========================================================== */
     const LATITUDE = -25.3953;
     const LONGITUDE = -51.4581;
 
@@ -386,10 +343,9 @@
         const res = await fetch(url);
         const data = await res.json();
 
-        // Obter a condição atual
         const infoAtual = obterInfoClima(data.current.weather_code);
 
-        // --- ABA 1: VISÃO GERAL ---
+        // ABA 1: VISÃO GERAL
         const temp = Math.round(data.current.temperature_2m);
         const sensacao = Math.round(data.current.apparent_temperature);
         const umidade = data.current.relative_humidity_2m;
@@ -433,7 +389,7 @@
           </div>
         `;
 
-        // --- ABA 2: MÉTRICAS AVANÇADAS ---
+        // ABA 2: MÉTRICAS AVANÇADAS
         const pressao = Math.round(data.current.surface_pressure);
         const precipitacao = data.current.precipitation;
         const probChuva = data.daily.precipitation_probability_max[0] || 0;
@@ -442,7 +398,7 @@
         document.getElementById('conteudo-detalhes').innerHTML = `
           <div class="grid-stats" style="margin-top:5px;">
             <div class="stat-box">
-              <span class="stat-icon">Chuva</span>
+              <span class="stat-icon">🌧️</span>
               <div class="stat-info">
                 <span>Chuva Hoje</span>
                 <strong>${precipitacao} mm</strong>
@@ -472,7 +428,7 @@
           </div>
         `;
 
-        // --- ABA 3: ASTRONOMIA & SOL ---
+        // ABA 3: ASTRONOMIA & SOL
         const uvMax = data.daily.uv_index_max[0];
         const nascerSol = formatarHora(data.daily.sunrise[0]);
         const porSol = formatarHora(data.daily.sunset[0]);
@@ -512,7 +468,7 @@
           </div>
         `;
 
-        // --- ABA 4: PREVISÃO 3 DIAS ---
+        // ABA 4: PREVISÃO 3 DIAS
         let htmlPrevisao = '<div class="forecast-list">';
         const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
