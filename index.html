@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clima Guarapuava | Dashboard</title>
+  <title>Clima Guarapuava | Painel Completo</title>
   <style>
+    /* 1. VARIÁVEIS DE CORES E ESTILOS GLOBAIS */
     :root {
       --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
       --card-bg: rgba(255, 255, 255, 0.08);
@@ -14,6 +15,7 @@
       --text-muted: #94a3b8;
     }
 
+    /* Reset básico para remover margens padrão */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -31,7 +33,7 @@
       padding: 20px;
     }
 
-    /* Container Principal */
+    /* 2. ESTRUTURA DO CARTÃO PRINCIPAL (Efeito Glassmorphism) */
     .weather-card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
@@ -40,13 +42,13 @@
       border-radius: 28px;
       padding: 30px;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
       position: relative;
       overflow: hidden;
     }
 
-    /* Brilho decorativo de fundo */
+    /* Luz de fundo decorativa */
     .weather-card::before {
       content: '';
       position: absolute;
@@ -73,18 +75,17 @@
     header h1 {
       font-size: 2rem;
       font-weight: 700;
-      letter-spacing: -0.5px;
     }
 
     header p {
       color: var(--accent);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    /* Abas Navegação */
+    /* 3. SISTEMA DE ABAS */
     .tabs {
       display: flex;
       background: rgba(0, 0, 0, 0.2);
@@ -101,7 +102,7 @@
       background: transparent;
       color: var(--text-muted);
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -113,7 +114,6 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    /* Conteúdo das Abas */
     .tab-content {
       display: none;
       animation: fadeIn 0.4s ease forwards;
@@ -128,10 +128,10 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Aba 1: Hoje */
+    /* 4. EXIBIÇÃO DE TEMPERATURA E PAINEL DE DADOS */
     .temp-display {
       text-align: center;
-      margin: 15px 0 25px 0;
+      margin: 10px 0 20px 0;
     }
 
     .temp-number {
@@ -150,20 +150,21 @@
       font-weight: 500;
     }
 
+    /* Grid com 2 colunas para organizar as métricas detalhadas */
     .grid-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .stat-box {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 14px;
+      padding: 12px;
       border-radius: 16px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       transition: transform 0.2s ease;
     }
 
@@ -173,21 +174,21 @@
     }
 
     .stat-icon {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
 
     .stat-info span {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
     }
 
     .stat-info strong {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-main);
     }
 
-    /* Aba 2: Previsão */
+    /* 5. LISTA DA ABA PREVISÃO */
     .forecast-list {
       display: flex;
       flex-direction: column;
@@ -206,7 +207,7 @@
 
     .forecast-day {
       font-weight: 600;
-      width: 80px;
+      width: 70px;
     }
 
     .forecast-temp {
@@ -231,12 +232,17 @@
       </header>
 
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('hoje')">Agora</button>
-        <button class="tab-btn" onclick="switchTab('previsao')">Previsão (3 dias)</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'hoje')">Tempo Agora</button>
+        <button class="tab-btn" onclick="switchTab(event, 'detalhes')">Detalhes</button>
+        <button class="tab-btn" onclick="switchTab(event, 'previsao')">3 Dias</button>
       </div>
 
       <div id="hoje" class="tab-content active">
         <div id="conteudo-hoje" class="loading">Carregando dados...</div>
+      </div>
+
+      <div id="detalhes" class="tab-content">
+        <div id="conteudo-detalhes" class="loading">Carregando detalhes...</div>
       </div>
 
       <div id="previsao" class="tab-content">
@@ -246,44 +252,62 @@
   </div>
 
   <script>
-    const lat = -25.3953;
-    const lon = -51.4581;
+    // Coordenadas geográficas de Guarapuava
+    const LATITUDE = -25.3953;
+    const LONGITUDE = -51.4581;
 
-    // Dicionário para traduzir os códigos do tempo
+    /**
+     * Converte o código numérico WMO retornado pela API em uma descrição com emoji
+     */
     function traduzirClima(code) {
       const codigos = {
         0: 'Céu Limpo ☀️',
         1: 'Predominantemente Limpo 🌤️',
         2: 'Parcialmente Nublado ⛅',
-        3: 'Nublado ☁️',
-        45: 'Névoa 🌫️',
+        3: 'Encoberto / Nublado ☁️',
+        45: 'Névoa / Neblina 🌫️',
         51: 'Garoa Leve 🌧️',
+        53: 'Garoa Moderada 🌧️',
         61: 'Chuva Moderada 🌧️',
         65: 'Chuva Forte 🌧️',
         80: 'Pancadas de Chuva 🌦️',
         95: 'Trovoadas 🌩️'
       };
-      return codigos[code] || 'Variável 🌤️';
+      return codigos[code] || 'Tempo Variável 🌤️';
     }
 
-    // Alternar entre abas
-    function switchTab(tabId) {
+    /**
+     * Alterna a visualização entre as abas ativas
+     */
+    function switchTab(evt, tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-      event.currentTarget.classList.add('active');
+      evt.currentTarget.classList.add('active');
       document.getElementById(tabId).classList.add('active');
     }
 
-    // Buscar dados na API
+    /**
+     * Formata um horário do formato ISO (AAAA-MM-DDTHH:MM) para apenas (HH:MM)
+     */
+    function formatarHora(isoString) {
+      if (!isoString) return '--:--';
+      const data = new Date(isoString);
+      return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    /**
+     * Busca os dados em tempo real da API pública Open-Meteo
+     */
     async function carregarClima() {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FSao_Paulo`;
+      // Endpoint requisitando dados atuais e diários completos
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LATITUDE}&longitude=${LONGITUDE}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=America%2FSao_Paulo`;
 
       try {
         const res = await fetch(url);
         const data = await res.json();
 
-        // 1. Preencher Aba "Agora"
+        // --- ABA 1: TEMPO AGORA ---
         const temp = Math.round(data.current.temperature_2m);
         const sensacao = Math.round(data.current.apparent_temperature);
         const umidade = data.current.relative_humidity_2m;
@@ -304,7 +328,6 @@
                 <strong>${sensacao}°C</strong>
               </div>
             </div>
-
             <div class="stat-box">
               <span class="stat-icon">💧</span>
               <div class="stat-info">
@@ -312,7 +335,6 @@
                 <strong>${umidade}%</strong>
               </div>
             </div>
-
             <div class="stat-box">
               <span class="stat-icon">💨</span>
               <div class="stat-info">
@@ -320,7 +342,6 @@
                 <strong>${vento} km/h</strong>
               </div>
             </div>
-
             <div class="stat-box">
               <span class="stat-icon">📍</span>
               <div class="stat-info">
@@ -331,7 +352,46 @@
           </div>
         `;
 
-        // 2. Preencher Aba "Previsão"
+        // --- ABA 2: DETALHES ADICIONAIS ---
+        const pressao = Math.round(data.current.surface_pressure);
+        const uvMax = data.daily.uv_index_max[0];
+        const nascerSol = formatarHora(data.daily.sunrise[0]);
+        const porSol = formatarHora(data.daily.sunset[0]);
+
+        document.getElementById('conteudo-detalhes').innerHTML = `
+          <div class="grid-stats" style="margin-top: 10px;">
+            <div class="stat-box">
+              <span class="stat-icon">☀️</span>
+              <div class="stat-info">
+                <span>Índice UV Máx.</span>
+                <strong>${uvMax}</strong>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-icon">⏲️</span>
+              <div class="stat-info">
+                <span>Pressão</span>
+                <strong>${pressao} hPa</strong>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-icon">🌅</span>
+              <div class="stat-info">
+                <span>Nascer do Sol</span>
+                <strong>${nascerSol}</strong>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-icon">🌇</span>
+              <div class="stat-info">
+                <span>Pôr do Sol</span>
+                <strong>${porSol}</strong>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // --- ABA 3: PREVISÃO (PRÓXIMOS 3 DIAS) ---
         let htmlPrevisao = '<div class="forecast-list">';
         const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -345,7 +405,7 @@
           htmlPrevisao += `
             <div class="forecast-item">
               <span class="forecast-day">${diaNome}</span>
-              <span style="font-size:0.85rem; color: var(--text-muted);">${climaDia}</span>
+              <span style="font-size:0.8rem; color: var(--text-muted);">${climaDia}</span>
               <span class="forecast-temp">${max}° / ${min}°</span>
             </div>
           `;
@@ -354,10 +414,11 @@
         document.getElementById('conteudo-previsao').innerHTML = htmlPrevisao;
 
       } catch (err) {
-        document.getElementById('conteudo-hoje').innerHTML = `<p style="color:#ef4444; text-align:center;">Erro ao carregar dados.</p>`;
+        document.getElementById('conteudo-hoje').innerHTML = `<p style="color:#ef4444; text-align:center;">Erro ao carregar os dados climáticos.</p>`;
       }
     }
 
+    // Inicializa a chamada ao carregar a página
     carregarClima();
   </script>
 </body>
