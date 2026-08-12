@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clima Guarapuava | Painel Completo</title>
+  <title>Clima Guarapuava | Edição Verde & Azul</title>
   <style>
-    /* 1. VARIÁVEIS DE CORES E ESTILOS GLOBAIS */
+    /* ==========================================================
+       1. VARIÁVEIS DE CORES (Tons de Verde, Azul e Ciano)
+       ========================================================== */
     :root {
-      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.15);
-      --accent: #38bdf8;
+      /* Gradiente de fundo: Verde Esmeralda -> Azul Oceano Profundo */
+      --bg-gradient: linear-gradient(135deg, #064e3b 0%, #0d9488 45%, #1e3a8a 100%);
+      --card-bg: rgba(15, 23, 42, 0.45);
+      --card-border: rgba(45, 212, 191, 0.3); /* Borda em ciano/verde */
+      --accent-green: #34d399; /* Verde neon para destaques */
+      --accent-blue: #38bdf8;  /* Azul claro para métricas secundárias */
       --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --text-muted: #cbd5e1;
     }
 
-    /* Reset básico para remover margens padrão */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -33,31 +36,34 @@
       padding: 20px;
     }
 
-    /* 2. ESTRUTURA DO CARTÃO PRINCIPAL (Efeito Glassmorphism) */
+    /* ==========================================================
+       2. CARTÃO PRINCIPAL E EFEITOS VISUAIS
+       ========================================================== */
     .weather-card {
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 30px;
+      border-radius: 30px;
+      padding: 25px;
       width: 100%;
-      max-width: 440px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      max-width: 450px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5),
+                  0 0 40px rgba(52, 211, 153, 0.15); /* Brilho esverdeado */
       position: relative;
       overflow: hidden;
     }
 
-    /* Luz de fundo decorativa */
+    /* Brilho decorativo no topo */
     .weather-card::before {
       content: '';
       position: absolute;
-      top: -50px;
-      right: -50px;
-      width: 150px;
-      height: 150px;
-      background: rgba(56, 189, 248, 0.25);
-      filter: blur(60px);
+      top: -60px;
+      left: -60px;
+      width: 180px;
+      height: 180px;
+      background: rgba(52, 211, 153, 0.3);
+      filter: blur(70px);
       border-radius: 50%;
       z-index: 0;
     }
@@ -67,51 +73,82 @@
       z-index: 1;
     }
 
+    /* ==========================================================
+       3. CABEÇALHO & IMAGEM DO CLIMA
+       ========================================================== */
     header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     header h1 {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #6ee7b7, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     header p {
-      color: var(--accent);
+      color: var(--text-muted);
       font-size: 0.85rem;
-      font-weight: 600;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      font-weight: 600;
     }
 
-    /* 3. SISTEMA DE ABAS */
+    /* Banner da imagem ilustrativa do tempo */
+    .weather-image-box {
+      width: 100%;
+      height: 130px;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 15px 0;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .weather-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .weather-image-box:hover img {
+      transform: scale(1.08);
+    }
+
+    /* ==========================================================
+       4. SISTEMA DE ABAS NAVEGÁVEIS
+       ========================================================== */
     .tabs {
       display: flex;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 5px;
-      border-radius: 14px;
-      margin-bottom: 25px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 6px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(52, 211, 153, 0.2);
     }
 
     .tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 10px 5px;
       border: none;
       background: transparent;
       color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.85rem;
-      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border-radius: 12px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .tab-btn.active {
-      background: rgba(255, 255, 255, 0.15);
-      color: var(--text-main);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      background: linear-gradient(135deg, #059669, #0284c7);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
     }
 
     .tab-content {
@@ -124,71 +161,75 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 4. EXIBIÇÃO DE TEMPERATURA E PAINEL DE DADOS */
+    /* ==========================================================
+       5. LAYOUTS DE DADOS E CARDS DE INFORMAÇÕES
+       ========================================================== */
     .temp-display {
       text-align: center;
-      margin: 10px 0 20px 0;
+      margin-bottom: 20px;
     }
 
     .temp-number {
-      font-size: 4.5rem;
-      font-weight: 800;
+      font-size: 4.8rem;
+      font-weight: 900;
       line-height: 1;
-      background: linear-gradient(180deg, #ffffff, #cbd5e1);
+      background: linear-gradient(180deg, #ffffff 30%, #a7f3d0 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .condition-text {
-      font-size: 1.1rem;
-      color: var(--accent);
+      font-size: 1.15rem;
+      color: var(--accent-green);
       margin-top: 8px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    /* Grid com 2 colunas para organizar as métricas detalhadas */
     .grid-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
     }
 
     .stat-box {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 12px;
-      border-radius: 16px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      transition: transform 0.2s ease;
+      gap: 12px;
+      transition: all 0.2s ease;
     }
 
     .stat-box:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-3px);
+      background: rgba(52, 211, 153, 0.1);
+      border-color: rgba(52, 211, 153, 0.3);
     }
 
     .stat-icon {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
     }
 
     .stat-info span {
       display: block;
       font-size: 0.7rem;
       color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .stat-info strong {
       font-size: 0.95rem;
-      color: var(--text-main);
+      color: #ffffff;
     }
 
-    /* 5. LISTA DA ABA PREVISÃO */
+    /* Estilo da Lista de Previsão */
     .forecast-list {
       display: flex;
       flex-direction: column;
@@ -200,19 +241,20 @@
       justify-content: space-between;
       align-items: center;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 12px 16px;
-      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 18px;
+      border-radius: 16px;
     }
 
     .forecast-day {
-      font-weight: 600;
-      width: 70px;
+      font-weight: 700;
+      width: 75px;
+      color: var(--accent-green);
     }
 
     .forecast-temp {
-      font-weight: 700;
-      color: var(--accent);
+      font-weight: 800;
+      color: var(--accent-blue);
     }
 
     .loading {
@@ -226,14 +268,20 @@
 
   <div class="weather-card">
     <div class="card-content">
+      
       <header>
         <h1>Guarapuava</h1>
         <p>Paraná • Brasil</p>
       </header>
 
+      <div class="weather-image-box">
+        <img id="clima-img" src="https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=600&auto=format&fit=crop" alt="Condição do Clima">
+      </div>
+
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(event, 'hoje')">Tempo Agora</button>
-        <button class="tab-btn" onclick="switchTab(event, 'detalhes')">Detalhes</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'hoje')">Atual</button>
+        <button class="tab-btn" onclick="switchTab(event, 'detalhes')">Métricas</button>
+        <button class="tab-btn" onclick="switchTab(event, 'sol')">Astronomia</button>
         <button class="tab-btn" onclick="switchTab(event, 'previsao')">3 Dias</button>
       </div>
 
@@ -245,39 +293,44 @@
         <div id="conteudo-detalhes" class="loading">Carregando detalhes...</div>
       </div>
 
+      <div id="sol" class="tab-content">
+        <div id="conteudo-sol" class="loading">Carregando dados astronômicos...</div>
+      </div>
+
       <div id="previsao" class="tab-content">
         <div id="conteudo-previsao" class="loading">Carregando previsão...</div>
       </div>
+
     </div>
   </div>
 
   <script>
-    // Coordenadas geográficas de Guarapuava
+    // Coordenadas geográficas de Guarapuava - PR
     const LATITUDE = -25.3953;
     const LONGITUDE = -51.4581;
 
     /**
-     * Converte o código numérico WMO retornado pela API em uma descrição com emoji
+     * Dicionário completo de códigos WMO da Open-Meteo com descrições e imagens temáticas do Unsplash
      */
-    function traduzirClima(code) {
-      const codigos = {
-        0: 'Céu Limpo ☀️',
-        1: 'Predominantemente Limpo 🌤️',
-        2: 'Parcialmente Nublado ⛅',
-        3: 'Encoberto / Nublado ☁️',
-        45: 'Névoa / Neblina 🌫️',
-        51: 'Garoa Leve 🌧️',
-        53: 'Garoa Moderada 🌧️',
-        61: 'Chuva Moderada 🌧️',
-        65: 'Chuva Forte 🌧️',
-        80: 'Pancadas de Chuva 🌦️',
-        95: 'Trovoadas 🌩️'
-      };
-      return codigos[code] || 'Tempo Variável 🌤️';
+    const CODIGOS_CLIMA = {
+      0: { texto: 'Céu Limpo ☀️', img: 'https://images.unsplash.com/photo-1601297183305-6df142704ea2?w=600&auto=format&fit=crop' },
+      1: { texto: 'Predominantemente Limpo 🌤️', img: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=600&auto=format&fit=crop' },
+      2: { texto: 'Parcialmente Nublado ⛅', img: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=600&auto=format&fit=crop' },
+      3: { texto: 'Encoberto / Nublado ☁️', img: 'https://images.unsplash.com/photo-1500740516770-92bd004b996e?w=600&auto=format&fit=crop' },
+      45: { texto: 'Névoa / Neblina 🌫️', img: 'https://images.unsplash.com/photo-1487621167305-5d248087c724?w=600&auto=format&fit=crop' },
+      51: { texto: 'Garoa Leve 🌧️', img: 'https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=600&auto=format&fit=crop' },
+      61: { texto: 'Chuva Moderada 🌧️', img: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=600&auto=format&fit=crop' },
+      65: { texto: 'Chuva Forte 🌧️', img: 'https://images.unsplash.com/photo-1438440779932-95745321af09?w=600&auto=format&fit=crop' },
+      80: { texto: 'Pancadas de Chuva 🌦️', img: 'https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=600&auto=format&fit=crop' },
+      95: { texto: 'Trovoadas 🌩️', img: 'https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?w=600&auto=format&fit=crop' }
+    };
+
+    function obterInfoClima(code) {
+      return CODIGOS_CLIMA[code] || { texto: 'Variável 🌤️', img: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=600&auto=format&fit=crop' };
     }
 
     /**
-     * Alterna a visualização entre as abas ativas
+     * Alterna a exibição das abas
      */
     function switchTab(evt, tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -287,9 +340,6 @@
       document.getElementById(tabId).classList.add('active');
     }
 
-    /**
-     * Formata um horário do formato ISO (AAAA-MM-DDTHH:MM) para apenas (HH:MM)
-     */
     function formatarHora(isoString) {
       if (!isoString) return '--:--';
       const data = new Date(isoString);
@@ -297,27 +347,30 @@
     }
 
     /**
-     * Busca os dados em tempo real da API pública Open-Meteo
+     * Requisição principal para a API
      */
     async function carregarClima() {
-      // Endpoint requisitando dados atuais e diários completos
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LATITUDE}&longitude=${LONGITUDE}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=America%2FSao_Paulo`;
+      // Requisita múltiplas métricas avançadas
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LATITUDE}&longitude=${LONGITUDE}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=America%2FSao_Paulo`;
 
       try {
         const res = await fetch(url);
         const data = await res.json();
 
-        // --- ABA 1: TEMPO AGORA ---
+        // 1. Atualizar Imagem Ilustrativa
+        const infoAtual = obterInfoClima(data.current.weather_code);
+        document.getElementById('clima-img').src = infoAtual.img;
+
+        // --- ABA 1: VISÃO GERAL ---
         const temp = Math.round(data.current.temperature_2m);
         const sensacao = Math.round(data.current.apparent_temperature);
         const umidade = data.current.relative_humidity_2m;
         const vento = Math.round(data.current.wind_speed_10m);
-        const condicao = traduzirClima(data.current.weather_code);
 
         document.getElementById('conteudo-hoje').innerHTML = `
           <div class="temp-display">
             <div class="temp-number">${temp}°C</div>
-            <div class="condition-text">${condicao}</div>
+            <div class="condition-text">${infoAtual.texto}</div>
           </div>
 
           <div class="grid-stats">
@@ -343,7 +396,7 @@
               </div>
             </div>
             <div class="stat-box">
-              <span class="stat-icon">📍</span>
+              <span class="stat-icon">⛰️</span>
               <div class="stat-info">
                 <span>Altitude</span>
                 <strong>1.120 m</strong>
@@ -352,19 +405,26 @@
           </div>
         `;
 
-        // --- ABA 2: DETALHES ADICIONAIS ---
+        // --- ABA 2: MÉTRICAS AVANÇADAS ---
         const pressao = Math.round(data.current.surface_pressure);
-        const uvMax = data.daily.uv_index_max[0];
-        const nascerSol = formatarHora(data.daily.sunrise[0]);
-        const porSol = formatarHora(data.daily.sunset[0]);
+        const precipitacao = data.current.precipitation;
+        const probChuva = data.daily.precipitation_probability_max[0] || 0;
+        const direcaoVento = data.current.wind_direction_10m;
 
         document.getElementById('conteudo-detalhes').innerHTML = `
-          <div class="grid-stats" style="margin-top: 10px;">
+          <div class="grid-stats" style="margin-top:5px;">
             <div class="stat-box">
-              <span class="stat-icon">☀️</span>
+              <span class="stat-icon">🌧️</span>
               <div class="stat-info">
-                <span>Índice UV Máx.</span>
-                <strong>${uvMax}</strong>
+                <span>Chuva Hoje</span>
+                <strong>${precipitacao} mm</strong>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-icon">☔</span>
+              <div class="stat-info">
+                <span>Prob. Chuva</span>
+                <strong>${probChuva}%</strong>
               </div>
             </div>
             <div class="stat-box">
@@ -374,6 +434,25 @@
                 <strong>${pressao} hPa</strong>
               </div>
             </div>
+            <div class="stat-box">
+              <span class="stat-icon">🧭</span>
+              <div class="stat-info">
+                <span>Direção Vento</span>
+                <strong>${direcaoVento}°</strong>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // --- ABA 3: ASTRONOMIA & SOL ---
+        const uvMax = data.daily.uv_index_max[0];
+        const nascerSol = formatarHora(data.daily.sunrise[0]);
+        const porSol = formatarHora(data.daily.sunset[0]);
+        const maxHoje = Math.round(data.daily.temperature_2m_max[0]);
+        const minHoje = Math.round(data.daily.temperature_2m_min[0]);
+
+        document.getElementById('conteudo-sol').innerHTML = `
+          <div class="grid-stats" style="margin-top:5px;">
             <div class="stat-box">
               <span class="stat-icon">🌅</span>
               <div class="stat-info">
@@ -388,10 +467,24 @@
                 <strong>${porSol}</strong>
               </div>
             </div>
+            <div class="stat-box">
+              <span class="stat-icon">☀️</span>
+              <div class="stat-info">
+                <span>Índice UV Máx</span>
+                <strong>${uvMax}</strong>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-icon">📊</span>
+              <div class="stat-info">
+                <span>Máx / Min Hoje</span>
+                <strong>${maxHoje}° / ${minHoje}°</strong>
+              </div>
+            </div>
           </div>
         `;
 
-        // --- ABA 3: PREVISÃO (PRÓXIMOS 3 DIAS) ---
+        // --- ABA 4: PREVISÃO 3 DIAS ---
         let htmlPrevisao = '<div class="forecast-list">';
         const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -400,12 +493,12 @@
           const diaNome = diasSemana[dataObj.getDay()];
           const max = Math.round(data.daily.temperature_2m_max[i]);
           const min = Math.round(data.daily.temperature_2m_min[i]);
-          const climaDia = traduzirClima(data.daily.weather_code[i]);
+          const infoDia = obterInfoClima(data.daily.weather_code[i]);
 
           htmlPrevisao += `
             <div class="forecast-item">
               <span class="forecast-day">${diaNome}</span>
-              <span style="font-size:0.8rem; color: var(--text-muted);">${climaDia}</span>
+              <span style="font-size:0.8rem; color: var(--text-muted);">${infoDia.texto}</span>
               <span class="forecast-temp">${max}° / ${min}°</span>
             </div>
           `;
@@ -414,11 +507,10 @@
         document.getElementById('conteudo-previsao').innerHTML = htmlPrevisao;
 
       } catch (err) {
-        document.getElementById('conteudo-hoje').innerHTML = `<p style="color:#ef4444; text-align:center;">Erro ao carregar os dados climáticos.</p>`;
+        document.getElementById('conteudo-hoje').innerHTML = `<p style="color:#ef4444; text-align:center;">Erro ao carregar dados do tempo.</p>`;
       }
     }
 
-    // Inicializa a chamada ao carregar a página
     carregarClima();
   </script>
 </body>
