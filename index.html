@@ -3,168 +3,362 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clima em Guarapuava</title>
+  <title>Clima Guarapuava | Dashboard</title>
   <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --accent: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: #ffffff;
+      background: var(--bg-gradient);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
+    /* Container Principal */
+    .weather-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
       padding: 30px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Brilho decorativo de fundo */
+    .weather-card::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: rgba(56, 189, 248, 0.25);
+      filter: blur(60px);
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
       text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 5px;
-    }
-
-    .estado {
-      font-size: 0.9rem;
-      color: #d1d5db;
       margin-bottom: 20px;
     }
 
-    .temp-container {
-      margin: 20px 0;
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
 
-    .temperatura {
-      font-size: 4rem;
-      font-weight: bold;
+    header p {
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .condicao {
-      font-size: 1.2rem;
-      text-transform: capitalize;
-      margin-top: 5px;
-      color: #e2e8f0;
-    }
-
-    .detalhes {
+    /* Abas Navegação */
+    .tabs {
       display: flex;
-      justify-content: space-around;
-      margin-top: 25px;
-      padding-top: 15px;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 5px;
+      border-radius: 14px;
+      margin-bottom: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .info-box {
-      text-align: center;
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .info-box span {
+    .tab-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Conteúdo das Abas */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .tab-content.active {
       display: block;
-      font-size: 0.8rem;
-      color: #cbd5e1;
     }
 
-    .info-box strong {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Aba 1: Hoje */
+    .temp-display {
+      text-align: center;
+      margin: 15px 0 25px 0;
+    }
+
+    .temp-number {
+      font-size: 4.5rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(180deg, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .condition-text {
       font-size: 1.1rem;
+      color: var(--accent);
+      margin-top: 8px;
+      font-weight: 500;
     }
 
-    .erro {
-      color: #fca5a5;
+    .grid-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-icon {
+      font-size: 1.4rem;
+    }
+
+    .stat-info span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .stat-info strong {
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    /* Aba 2: Previsão */
+    .forecast-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .forecast-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 12px 16px;
+      border-radius: 14px;
+    }
+
+    .forecast-day {
+      font-weight: 600;
+      width: 80px;
+    }
+
+    .forecast-temp {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>Guarapuava</h1>
-    <p class="estado">Paraná, Brasil</p>
+  <div class="weather-card">
+    <div class="card-content">
+      <header>
+        <h1>Guarapuava</h1>
+        <p>Paraná • Brasil</p>
+      </header>
 
-    <div id="conteudo">
-      <p>Carregando dados do clima...</p>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('hoje')">Agora</button>
+        <button class="tab-btn" onclick="switchTab('previsao')">Previsão (3 dias)</button>
+      </div>
+
+      <div id="hoje" class="tab-content active">
+        <div id="conteudo-hoje" class="loading">Carregando dados...</div>
+      </div>
+
+      <div id="previsao" class="tab-content">
+        <div id="conteudo-previsao" class="loading">Carregando previsão...</div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Coordenadas geográficas de Guarapuava - PR
     const lat = -25.3953;
     const lon = -51.4581;
 
-    // Mapeamento dos códigos de tempo da Open-Meteo para texto em português
-    function obterDescricaoClima(code) {
+    // Dicionário para traduzir os códigos do tempo
+    function traduzirClima(code) {
       const codigos = {
-        0: 'Céu limpo',
-        1: 'Predominantemente limpo',
-        2: 'Parcialmente nublado',
-        3: 'Ensolarado / Nublado',
-        45: 'Névoa',
-        48: 'Sombra de geada',
-        51: 'Garoa leve',
-        53: 'Garoa moderada',
-        55: 'Garoa densa',
-        61: 'Chuva leve',
-        63: 'Chuva moderada',
-        65: 'Chuva forte',
-        80: 'Pancadas de chuva leves',
-        81: 'Pancadas de chuva moderadas',
-        82: 'Pancadas de chuva violentas',
-        95: 'Trovoada leve ou moderada'
+        0: 'Céu Limpo ☀️',
+        1: 'Predominantemente Limpo 🌤️',
+        2: 'Parcialmente Nublado ⛅',
+        3: 'Nublado ☁️',
+        45: 'Névoa 🌫️',
+        51: 'Garoa Leve 🌧️',
+        61: 'Chuva Moderada 🌧️',
+        65: 'Chuva Forte 🌧️',
+        80: 'Pancadas de Chuva 🌦️',
+        95: 'Trovoadas 🌩️'
       };
-      return codigos[code] || 'Condição variável';
+      return codigos[code] || 'Variável 🌤️';
     }
 
-    async function buscarClima() {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=America%2FSao_Paulo`;
+    // Alternar entre abas
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      event.currentTarget.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Buscar dados na API
+    async function carregarClima() {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FSao_Paulo`;
 
       try {
-        const resposta = await fetch(url);
-        const dados = await resposta.json();
+        const res = await fetch(url);
+        const data = await res.json();
 
-        const temp = Math.round(dados.current.temperature_2m);
-        const umidade = dados.current.relative_humidity_2m;
-        const vento = Math.round(dados.current.wind_speed_10m);
-        const condicao = obterDescricaoClima(dados.current.weather_code);
+        // 1. Preencher Aba "Agora"
+        const temp = Math.round(data.current.temperature_2m);
+        const sensacao = Math.round(data.current.apparent_temperature);
+        const umidade = data.current.relative_humidity_2m;
+        const vento = Math.round(data.current.wind_speed_10m);
+        const condicao = traduzirClima(data.current.weather_code);
 
-        document.getElementById('conteudo').innerHTML = `
-          <div class="temp-container">
-            <div class="temperatura">${temp}°C</div>
-            <div class="condicao">${condicao}</div>
+        document.getElementById('conteudo-hoje').innerHTML = `
+          <div class="temp-display">
+            <div class="temp-number">${temp}°C</div>
+            <div class="condition-text">${condicao}</div>
           </div>
-          
-          <div class="detalhes">
-            <div class="info-box">
-              <span>Umidade</span>
-              <strong>${umidade}%</strong>
+
+          <div class="grid-stats">
+            <div class="stat-box">
+              <span class="stat-icon">🌡️</span>
+              <div class="stat-info">
+                <span>Sensação</span>
+                <strong>${sensacao}°C</strong>
+              </div>
             </div>
-            <div class="info-box">
-              <span>Vento</span>
-              <strong>${vento} km/h</strong>
+
+            <div class="stat-box">
+              <span class="stat-icon">💧</span>
+              <div class="stat-info">
+                <span>Umidade</span>
+                <strong>${umidade}%</strong>
+              </div>
+            </div>
+
+            <div class="stat-box">
+              <span class="stat-icon">💨</span>
+              <div class="stat-info">
+                <span>Vento</span>
+                <strong>${vento} km/h</strong>
+              </div>
+            </div>
+
+            <div class="stat-box">
+              <span class="stat-icon">📍</span>
+              <div class="stat-info">
+                <span>Altitude</span>
+                <strong>1.120 m</strong>
+              </div>
             </div>
           </div>
         `;
-      } catch (erro) {
-        document.getElementById('conteudo').innerHTML = `
-          <p class="erro">Não foi possível carregar as informações do clima no momento.</p>
-        `;
+
+        // 2. Preencher Aba "Previsão"
+        let htmlPrevisao = '<div class="forecast-list">';
+        const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+        for (let i = 1; i <= 3; i++) {
+          const dataObj = new Date(data.daily.time[i] + 'T00:00:00');
+          const diaNome = diasSemana[dataObj.getDay()];
+          const max = Math.round(data.daily.temperature_2m_max[i]);
+          const min = Math.round(data.daily.temperature_2m_min[i]);
+          const climaDia = traduzirClima(data.daily.weather_code[i]);
+
+          htmlPrevisao += `
+            <div class="forecast-item">
+              <span class="forecast-day">${diaNome}</span>
+              <span style="font-size:0.85rem; color: var(--text-muted);">${climaDia}</span>
+              <span class="forecast-temp">${max}° / ${min}°</span>
+            </div>
+          `;
+        }
+        htmlPrevisao += '</div>';
+        document.getElementById('conteudo-previsao').innerHTML = htmlPrevisao;
+
+      } catch (err) {
+        document.getElementById('conteudo-hoje').innerHTML = `<p style="color:#ef4444; text-align:center;">Erro ao carregar dados.</p>`;
       }
     }
 
-    // Executa a busca ao carregar a página
-    buscarClima();
+    carregarClima();
   </script>
-
 </body>
 </html>
